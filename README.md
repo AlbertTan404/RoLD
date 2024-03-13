@@ -1,4 +1,4 @@
-# Multi-task Manipulation Policy Modeling with Visuomotor Latent Diffusion
+# Multi-task Manipulation Policy Modeling with Visuomotor Latent Diffusion [arxiv](https://arxiv.org/abs/2403.07312)
 #### Wenhui Tan, Bei Liu, Junbo Zhang, Ruihua Song, Jianlong Fu
 
 ---
