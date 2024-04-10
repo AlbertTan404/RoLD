@@ -72,7 +72,7 @@ class DownsampleCVAE(pl.LightningModule):
                 assert mode == 'pretraining'
                 self.low_dim_emb = None
 
-        if self.with_obs:
+        if self.with_obs:  # fix this in config
             if hidden_size == 512:
                 self.img_emb = ResBottleneck(hidden_size=hidden_size)
             else:
