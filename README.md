@@ -61,5 +61,5 @@ pip install git+https://github.com/facebookresearch/r3m.git
 ```
 conda env create -n rold python=3.10
 conda activate rold
-bash rold_env.sh
+source rold_env.sh
 ```
