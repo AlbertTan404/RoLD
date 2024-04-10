@@ -1,0 +1,896 @@
+average_step_per_episode: 100
+datasets:
+  _maniskill_dataset_converted_externally_to_rlds:
+    language:
+      outer_key: 
+      inner_key: 
+    action:
+      outer_key:
+      inner_keys:
+      gripper_is_bool:
+      gripper_close_is_positive:
+      index_mapping:
+    image:
+      image: 
+    canonical_view: 
+
+  _bc_z:
+    language:
+      outer_key: 
+      inner_key: 
+    action:
+      outer_key:
+      inner_keys:
+      gripper_is_bool:
+      gripper_close_is_positive:
+      index_mapping:
+    image:
+      image: 
+    canonical_view: 
+
+  robo_net:
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_signal: binary
+      gripper_close_is_positive: False
+      min: [-0.15101519,-0.1565145,-0.6257775,0,0,-0.9654438,-1.0]
+      max: [0.15718322,0.14304419,0.57623166,0,0,0.9297816,1.0]
+      mean: [-1.1366916e-05,1.5125085e-05,-0.008062339,0,0,-2.5888812e-05,-0.028595591]
+      std: [0.032429904,0.032394417,0.09075778,0,0,0.17676172,0.9996361]
+      index_mapping: [1, 2, 3, 0, 0, 4, 5]
+    image:
+      image: [240, 320, 3]
+    canonical_view: image
+
+  _toto:
+    language:
+      outer_key: observation
+      inner_key: natural_language_instruction
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, open_gripper]
+      abs_action: True
+      gripper_is_bool: True
+      gripper_close_is_positive: False
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+    image:
+      image: [480, 640, 3]
+    canonical_view: image
+
+  bridge:
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, open_gripper]
+      gripper_is_bool: True
+
+      gripper_signal: binary
+      gripper_close_is_positive: False
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      min: [-0.15559052,-0.16075383,-0.20664044,-0.78723234,-0.65459704,-1.1610136,0.0]
+      max: [0.13607752,0.17013738,0.2128921,0.75443304,0.5700094,0.82569605,1.0]
+      mean: [0.0005796338,0.0001665241,0.00025199732,-7.463656e-05,-0.002136332,0.00010259719,0.6684366]
+      std: [0.010073104,0.014915115,0.013089378,0.03009547,0.031722616,0.05266533,0.47108224]
+    image:
+      image: [480, 640, 3]
+    canonical_view: image
+
+  _utaustin_mutex:  # too long instruction?
+    language:
+      outer_key: language_instruction
+      inner_key: 
+
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False  # if True, the last key will be converted to float
+      gripper_close_is_positive: True  # If true, a larger gripper action stands for a closer gripper
+
+      gripper_signal: binary
+      # then concat all the data step[outer_key][inner_keys] (or just step[outer_key])
+      # supppose the concated data is 5-dim ([x, y, z, yaw, gripper])
+      # first pad the concated data with 0 at index 0 [0, x, y, z, yaw, gripper]
+      # the target should be [x,y,z,0,0,yaw,gripper] so create tgt=np.zeros(shape=(7,))
+      # then the values according to the mapping
+      # concated_data: [0:0, 1:x, 2:y, 3:z, 4:yaw, 5:gripper]
+
+      # index_mapping: [1, 2, 3, 0, 0, 4,   5]
+      # target_data:   [x, y, z, 0, 0, yaw, gripper]
+      # code like:
+      # target_action = np.zeros(shape=(7, ), dtype=np.float32)
+      # for tgt_idx, src_idx in enumerate(index_mapping):
+      #   target_action[tgt_idx] = concated_data[src_idx]
+      # normalized_tgt_action = (tgt_action - mean) / std
+
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      min: [-1.0,-1.0,-1.0,-0.375,-0.375,-0.375,-1.0]
+      max: [1.0,1.0,1.0,0.375,0.375,0.375,1.0]
+      mean: [0.06176343,-0.0050054663,0.10216819,-0.03314115,0.013894996,-0.0113176685,-0.007795337]
+      std: [0.18749881,0.4468454,0.37927994,0.14098226,0.064536214,0.11765014,1.00209]
+
+    image:
+      image: [128, 128, 3]
+      wrist_image: [128, 128, 3]
+    canonical_view: image
+
+  _berkeley_fanuc_manipulation:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key:
+      inner_keys: 
+      gripper_is_bool: False
+      gripper_close_is_positive: False
+      index_mapping: []
+      mean: []
+      std: []
+      max: []
+      min: []
+    image:
+      image: [224, 224, 3]
+      wrist_image: [224, 224, 3]
+
+  _cmu_play_fusion:
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      gripper_close_is_positive: False
+      index_mapping: [1, 2, 3,  8]
+    image:
+      image: [128, 128, 3]
+
+  cmu_stretch:
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+
+      gripper_signal: binary
+      gripper_close_is_positive: False
+      min: [-0.019353798,0.0,-0.020192152,0.0,0.0,0.0,0.0]
+      max: [0.023384072,0.0,0.023404928,0.0,0.0,0.0,1.0]
+      mean: [0.0003630468,0.0,0.001646696,0.0,0.0,0.0,0.39870483]
+      std: [0.00408182,1.0,0.0037743386,1.0,1.0,1.0,0.48963726]
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+    image:
+      image: [128, 128, 3]
+    canonical_view: image
+
+  fractal20220817_data:
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, gripper_closedness_action]
+      gripper_is_bool: False
+      gripper_signal: force-threshold-0
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      min: [-2.020452,-5.4978995,-2.0316634,-1.5699179,-1.5698922,-1.5704194,-1.0]
+      max: [2.9984593,22.090528,2.7507524,1.5706365,1.5321087,1.5691522,1.0]
+      mean: [0.0069875014,0.0062659234,-0.012625135,0.043331914,-0.005756167,0.00091309793,0.021864852]
+      std: [0.06921227,0.059654854,0.073531315,0.15610056,0.13164213,0.14593266,0.3603207]
+    image:
+      image: [256, 320, 3]
+    canonical_view: image
+
+  _kuka:  # episodes very short
+    language:
+      outer_key: observation
+      inner_key: natural_language_instruction
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, gripper_closedness_action]
+      gripper_is_bool: False
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+    image:
+      image: [256, 320, 3]
+    canonical_view: image
+
+  taco_play: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [rel_actions_world]
+      gripper_is_bool: False
+
+      gripper_signal: binary
+      gripper_close_is_positive: False
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      mean: [-0.0038459413,0.009671559,0.012780648,-0.0054038013,-0.009606571,-0.0024807807,-0.1472174]
+      std: [0.23254019,0.36298397,0.28692976,0.26177117,0.24388969,0.52164966,0.98938197]
+      max: [1.4915844,2.1842432,2.6836395,5.035227,2.665865,4.2507687,1.0]
+      min: [-4.242458,-3.192805,-1.3371468,-4.2026834,-2.6722639,-3.3467135,-1.0]
+    image:
+      # depth_gripper: [84, 84]
+      # depth_static: [150, 200]
+      rgb_gripper: [84, 84, 3]
+      rgb_static: [150, 200, 3]
+    canonical_view: rgb_static
+    
+  jaco_play: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, gripper_closedness_action]
+      gripper_is_bool: False
+
+      gripper_signal: force-threshold-0
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 0, 0, 0, 4]
+      mean: [0.00096585735,-0.005800745,-0.003950604,0.0,0.0,0.0,0.029295197]
+      std: [0.122350916,0.09678775,0.11155401,0.0,0.0,0.0,0.47126555]
+      max: [0.2,0.2,0.2,0.0,0.0,0.0,1.0]
+      min: [-0.2,-0.2,-0.2,0.0,0.0,0.0,-1.0]
+    image:
+      image: [224, 224, 3]
+      image_wrist: [224, 224, 3]
+    canonical_view: image
+
+  berkeley_cable_routing: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta]
+      gripper_is_bool: False
+
+      gripper_signal:
+      gripper_close_is_positive: False
+      index_mapping: [1, 2, 3, 4, 5, 6, 0]
+      mean: [-0.07139853,0.023609024,0.102419436,0.0,0.0,0.04967077,0.0]
+      std: [0.18154977,0.18109904,0.21220727,0.0,0.0,0.3475515,0.0]
+      max: [0.9633283,1.0,1.0,0.0,0.0,1.0,0.0]
+      min: [-0.98090816,-0.9554349,-0.9994775,0.0,0.0,-1.0,0.0]
+    image:
+      image: [128, 128, 3]
+      top_image: [128, 128, 3]
+      wrist225_image: [128, 128, 3]
+      wrist45_image: [128, 128, 3]
+    canonical_view: image
+
+  roboturk:  # one episode contains multiple tasks, mind the instructions
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, gripper_closedness_action]
+      gripper_is_bool: False
+
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      mean: [0.0014448888,-0.0015945357,-0.0011753805,0.0023012396,-0.00093824376,-0.00011485874,-0.1492051]
+      std: [0.0493537,0.06354564,0.06116491,0.09553406,0.084200144,0.065179124,0.9890353]
+      max: [0.39124173,0.46010283,0.48708335,1.8168887,1.8240283,1.4824821,1.0]
+      min: [-0.6546999,-0.6365841,-0.42177236,-1.6695483,-1.8023357,-1.4630828,-1.0]
+    image:
+      front_rgb: [480, 640, 3]
+    canonical_view: front_rgb
+
+  nyu_door_opening_surprising_effectiveness: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, gripper_closedness_action]
+      gripper_is_bool: False
+
+      gripper_signal: force-threshold-0.01
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      mean: [-0.0062134075,0.0012825616,0.0012440508,-0.0001565738,-0.011653881,-0.0015855222,0.022675302]
+      std: [0.012148533,0.019559348,0.0077468683,0.008133054,0.033606686,0.013172098,0.08920925]
+      max: [0.035083357,0.063189335,0.043332618,0.054775182,0.1734558,0.06685609,0.96622527]
+      min: [-0.27681807,-0.10727508,-0.3554436,-0.036789477,-0.21697818,-0.0676727,-0.28207946]
+    image:
+      image: [720, 960, 3]
+    canonical_view: image
+
+  viola: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, gripper_closedness_action]
+      gripper_is_bool: False
+
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      mean: [0.047618777,-0.02920461,0.055867158,-0.0026184842,0.0068673426,-0.016821278,-0.4647555]
+      std: [0.39158034,0.4076541,0.4007757,0.10023959,0.084432065,0.10375133,0.88521934]
+      max: [1.0,1.0,1.0,0.375,0.36321428,0.375,1.0]
+      min: [-1.0,-1.0,-1.0,-0.375,-0.375,-0.375,-1.0]
+    image:
+      agentview_rgb: [224, 224, 3]
+      eye_in_hand_rgb: [224, 224, 3]
+    canonical_view: agentview_rgb
+
+  berkeley_autolab_ur5: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, gripper_closedness_action]
+      gripper_is_bool: False
+
+      gripper_signal: force-threshold-0.1
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      mean: [0.0005683611,0.0012176944,-0.0005296353,0.00021029709,6.069498e-05,0.0012049833,0.0]
+      std: [0.011533243,0.007990539,0.009577767,0.009433038,0.01642755,0.011054285,0.12375644]
+      max: [0.02,0.02,0.02,0.06666667,0.06666667,0.06666667,1.0]
+      min: [-0.02,-0.02,-0.02,-0.06666667,-0.06666667,-0.06666667,-1.0]
+    image:
+      hand_image: [480, 640, 3]
+      image: [480, 640, 3]
+      # image_with_depth: [480, 640, 1]
+    canonical_view: image
+
+  columbia_cairlab_pusht_real: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [world_vector, rotation_delta, gripper_closedness_action]
+      gripper_is_bool: False
+      gripper_close_is_positive: False
+
+      gripper_signal: 
+      # index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      index_mapping: [1, 2, 0, 0, 0, 0, 0]
+      mean: [-0.0013286311,0.0014844551,0.0,0.0,0.0,0.0,0.0]
+      std: [0.013066671,0.015327031,0.0,0.0,0.0,0.0,0.0]
+      max: [0.23432465,0.45121098,0.0,0.0,0.0,0.0,0.0]
+      min: [-0.3853991,-0.31175086,0.0,0.0,0.0,0.0,0.0]
+    image:
+      image: [240, 320, 3]
+      wrist_image: [240, 320, 3]
+    canonical_view: image
+
+  stanford_kuka_multimodal_dataset_converted_externally_to_rlds: 
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      gripper_close_is_positive: False
+
+      gripper_signal: 
+      index_mapping: [1, 2, 3, 0, 0, 4, 0] # should be checked
+      mean: [-0.0028558734,0.00039253273,-0.0029044405,0,0,-0.0019456731, 0]
+      std: [0.02839532,0.029717535,0.027051711,1,1,0.09263818, 1]
+      max: [0.05,0.05,0.05,0, 0, 0.15, 0]
+      min: [-0.05,-0.05,-0.05,0,0,-0.15, 0]
+    image:
+      # depth_image: [128, 128, 1]
+      image: [128, 128, 3]
+    canonical_view: image
+
+  nyu_rot_dataset_converted_externally_to_rlds: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+
+      gripper_signal: 
+      gripper_close_is_positive: False
+      index_mapping: [1, 2, 3, 0, 0, 5, 0]
+      mean: [0.1965463,-0.104999505,-0.039819203,0.0,0.0022727272,0.0,0.0]
+      std: [0.4231604,0.46901545,0.42725626,0.0,0.047619108,0.0,0.0]
+      max: [1.0,1.0,1.0,0.0,1.0,0.0,0.0]
+      min: [-1.0,-1.0,-1.0,0.0,0.0,0.0,0.0]
+    image:
+      image: [84, 84, 3]
+    canonical_view: image
+
+  stanford_hydra_dataset_converted_externally_to_rlds: 
+    language:
+      outer_key: language_instruction
+      inner_key: 
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      gripper_close_is_positive: True
+
+      gripper_signal: binary
+      index_mapping: [1, 2, 3, 4, 5, 6, 7]
+      mean: [0.0007790164,0.00013707925,-0.0002548616,0.0012903379,-0.0047517866,0.0026929018,0.51144785]
+      std: [0.008022228,0.009131469,0.009574297,0.04122218,0.038430043,0.04606715,0.4997606]
+      max: [0.024998546,0.024999034,0.024999922,0.24974458,0.2499703,0.24999946,1.0]
+      min: [-0.024999045,-0.0249997,-0.024999298,-0.24993226,-0.2499666,-0.24999325,0.0]
+    image:
+      image: [240, 320, 3]
+      wrist_image: [240, 320, 3]
+    canonical_view: image
+
+  austin_buds_dataset_converted_externally_to_rlds: 
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1, 2, 3, 0, 0, 0, 7]
+      mean: [-0.07678356,0.0036849175,0.05644921,0.0,0.0,0.0,0.29790103]
+      std: [0.63677496,0.3788917,0.4779629,0.0,0.0,0.0,0.95442176]
+      max: [1.0,1.0,1.0,0.0,0.0,0.0,1.0]
+      min: [-1.0,-1.0,-1.0,0.0,0.0,0.0,-1.0]
+    image:
+      image: [128, 128, 3]
+      wrist_image: [128, 128, 3]
+    canonical_view: image
+
+  _nyu_franka_play_dataset_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      gripper_close_is_positive: False
+      index_mapping: [1,2,3,4,5,6,14]
+      mean: [-0.002895747,0.003557173,0.00064357877,0.0023153278,-0.0023922238,-0.0015158538,0.0027481185,0.0010219901,-0.00012002677,0.0003289423,0.0015034276,-0.0021985276,-0.0016632306,0.4460167,0.01016156]
+      std: [0.037964188,0.02999344,0.03088907,0.035438135,0.02886598,0.043608427,0.06070748,0.013274147,0.013215902,0.012822104,0.2732448,0.057022575,0.039172936,0.8950625,0.10027119]
+      max: [0.14495707,0.13028586,0.11370349,0.11802268,0.21037066,0.12956262,0.19070536,0.064241886,0.07027635,0.061296612,6.281068,0.196773,0.26377416,1.0,1.0]
+      min: [-0.107201084,-0.11304033,-0.11667186,-0.12557268,-0.12566182,-0.1590954,-0.19047071,-0.0595223,-0.072324455,-0.06730807,-6.2784348,-0.21479034,-0.36276197,-1.0,0.0]
+    image:
+      image: [128, 128, 3]
+      image_additional_view: [128, 128, 3]
+      # depth: [128, 128, 1]
+      # depth_additional_view: [128, 128, 1]
+    canonical_view: image
+
+  _cmu_franka_exploration_dataset_converted_externally_to_rlds:
+    # seems no enough steps per episode
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [0.02362956,0.0051615043,-0.015222261,0.04188222,0.0046763527,0.0988112,0.3]
+      std: [0.11304981,0.116313554,0.078526765,0.19957197,0.09077263,1.0257257,0.4582545]
+      max: [0.47253367,0.39019224,0.1048612,0.9421266,0.51699054,6.2564864,1.0]
+      min: [-0.14635915,-0.4534304,-0.32937068,-0.290073,-0.48279625,-6.2891498,0.0]
+    image:
+      image: [64, 64, 3]
+      highres_image: [480, 640, 3]
+    canonical_view: highres_image
+
+  _ucsd_kitchen_dataset_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      abs_action: true
+      gripper_is_bool: True
+      gripper_close_is_positive: False
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [410.3756,116.95189,192.35036,-121.22441,-33.848927,50.016136,0.7418136]
+      std: [122.81497,108.80083,130.30342,116.281845,27.621872,41.020966,0.43763337]
+      max: [678.0,400.0,507.0,180.00002,6.000014,116.999985,1.0]
+      min: [172.0,-166.0,-99.99999,-180.00002,-89.0,-96.00011,0.0]
+    image:
+      image: [480, 640, 3]
+    canonical_view: image
+
+  _ucsd_pick_and_place_dataset_converted_externally_to_rlds:  # low quality data
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      gripper_close_is_positive: False
+      index_mapping: [1,2,3,0,0,0,4]
+      mean: [0.14699791,-0.12457364,0.053909536,0,0,0,-0.07569984]
+      std: [0.48489225,0.46433133,0.540843,0,0,0,0.89286923]
+      max: [1.0,1.0,1.0,0,0,0,1.0]
+      min: [-1.0,-1.0,-1.0,0,0,0,-1.0]
+    image:
+      image: [224, 224, 3]
+    canonical_view: image
+
+  austin_sailor_dataset_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [0.011825301,0.006460939,0.06023686,0.0,0.0,0.001646604,-0.05219007]
+      std: [0.46349025,0.4124005,0.4118623,0.0,0.0,0.057860684,0.99787027]
+      max: [1.0,1.0,1.0,0.0,0.0,0.375,1.0]
+      min: [-1.0,-1.0,-1.0,0.0,0.0,-0.375,-1.0]
+    image:
+      image: [128, 128, 3]
+      wrist_image: [128, 128, 3]
+    canonical_view: image
+
+  austin_sirius_dataset_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [0.07747644,0.03195479,0.0424472,0.0,0.0,-0.016034609,0.13479717]
+      std: [0.3906358,0.2998168,0.27823064,0.0,0.0,0.08120734,0.9905528]
+      max: [1.0002285,0.9606087,1.1051798,0.0,0.0,0.34178573,1.000465]
+      min: [-1.0183026,-0.98,-0.9774575,0.0,0.0,-0.34607142,-1.0004185]
+    image:
+      image: [84, 84, 3]
+      wrist_image: [84, 84, 3]
+    canonical_view: image
+
+  usc_cloth_sim_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,0,0,0,4]
+      mean: [0.105,0.03899963,2.3841857e-12,0,0,0,0.288093]
+      std: [0.20360108,0.22256258,0.36332047,0,0,0,0.38395545]
+      max: [0.5,0.5,1.0,0,0,0,0.8]
+      min: [0.0,-0.6,-0.5,0,0,0,0.0]
+    image:
+      image: [32, 32, 3]
+    canonical_view: image
+
+  _utokyo_pr2_opening_fridge_converted_externally_to_rlds:
+  # abs action?
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [648.7963,134.00903,1084.4326,-0.59741896,-0.19925973,0.011027544,0.25481686]
+      std: [243.08586,257.75443,144.15361,0.49704772,0.15853582,0.14871414,0.435763]
+      max: [992.8727,776.98096,1578.6831,0.24240845,0.4034255,0.9767319]
+      min: [-453.4911,-1294.9354,766.853,-2.916839,-1.0906351,-0.7050959,0.0]
+    image:
+      image: [128, 128, 3]
+    canonical_view: image
+
+  _utokyo_pr2_tabletop_manipulation_converted_externally_to_rlds:
+  # is this abs action?
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [476.25525,-62.400757,817.60736,1.5703903,1.5703903,-1.5703903,0.42604256]
+      std: [66.20367,157.32535,79.65957,0.0004060108,0.0004060108,0.0004060108,0.49454728]
+      max: [701.22705,378.27518,1037.9014,1.5707964,1.5707964,-1.5707964,1.0]
+      min: [233.80075,-448.76117,683.6527,1.5707964,1.5707964,-1.5707964,0.0]
+    image:
+      image: [128, 128, 3]
+    canonical_view: image
+
+  utokyo_xarm_pick_and_place_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+
+      gripper_signal: abs
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [0.37275583,-0.0033627972,0.302364,2.3023665,-0.028892199,0.12031945,0.43367606]
+      std: [0.04503441,0.14538307,0.09052395,1.7120283,0.11656404,0.22716746,0.48757684]
+      max: [0.5145256,0.28572002,0.5560113,3.1411602,0.49824417,0.9626807,1.0]
+      min: [0.22990057,-0.3306972,0.1617671,-3.1413672,-0.35810038,-0.53911775,0.0]
+    image:
+      image: [224, 224, 3]
+      image2: [224, 224, 3]
+      hand_image: [224, 224, 3]
+    canonical_view: image
+
+  _berkeley_mvp_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,8]
+      mean: [-6.0901424e-05,0.0032694037,-0.00014031114,-0.00093984953,-2.0682975e-05,-0.002937962,-0.0006887745,0.48194578]
+      std: [0.0025867769,0.012797507,0.00560216,0.018046888,0.0016723009,0.021038346,0.005722353,0.49976623]
+      max: [0.022487685,0.13018322,0.06808573,0.10099727,0.024909932,0.092411876,0.047665834,1.0]
+      min: [-0.02135203,-0.03705667,-0.1387428,-0.19421488,-0.017915316,-0.19084352,-0.09572661,0.0]
+    image:
+      hand_image: [480, 640, 3]
+
+  _berkeley_rpt_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,8]
+      mean: [0.00013917917,-0.00027910402,-9.376837e-06,-0.00032673698,1.9516052e-05,3.068495e-05,4.756752e-05,0.4785775]
+      std: [0.0015279724,0.0045425007,0.0007791061,0.003020025,0.0010572867,0.005123675,0.004143369,0.49978197]
+      max: [0.066869184,0.112888634,0.0115112215,0.03328538,0.16681346,0.08019853,0.062677264,1.0]
+      min: [-0.029659934,-0.03170164,-0.026589055,-0.042382836,-0.0830309,-0.02891469,-0.12611546,0.0]
+    image:
+      hand_image: [480, 640, 3]
+
+  _kaist_nonprehensile_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      index_mapping: [1,2,3,0,0,0,0]  # seems no gripper but not sure
+      mean: [0.0019469671,0.00023607437,0.00090286764,-0.0022928442,0.00011904385,-0.0036542765,180.56076,170.3104,185.60385,152.46106,174.59824,82.46711,31.534365,1.0037495,0.6999126,0.33574754,0.48796102,0.4932014,0.73938084,1.232158]
+      std: [0.0146865165,0.016561238,0.012853604,0.023209855,0.020493455,0.020038577,28.134468,34.891018,25.784292,53.76362,33.45856,50.650562,32.378338,0.5329004,0.4424238,0.12782517,0.37656787,0.3380472,0.39779198,0.5643148]
+      max: [0.02,0.02,0.02,0.03,0.03,0.03,200.0,200.0,200.0,200.0,200.0,200.0,200.0,2.0,2.0,1.7018844,2.0,2.0,2.0,2.0]
+      min: [-0.02,-0.02,-0.02,-0.03,-0.03,-0.03,10.0,10.0,10.0,10.0,10.0,10.0,10.0,0.29999995,0.29999995,0.29999995,0.29999995,0.29999995,0.29999995,0.29999995]
+    image:
+      image: [480, 640, 3]
+
+  stanford_mask_vit_converted_externally_to_rlds:  # seems low quality
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,0,0,4,5]
+      mean: [-5.7280602e-05,4.4461805e-05,0.00013061121,0,0,-0.0003851414,-0.17713885]
+      std: [0.03302672,0.033040244,0.07856057,0,0,0.17140482,0.96742386]
+      max: [0.07,0.07,0.35625914,0,0,0.6708251,1.0]
+      min: [-0.07,-0.07,-0.38690937,0,0,-0.7456048,-1.0]
+    image:
+      image: [480, 480, 3]
+    canonical_view: image
+
+  tokyo_u_lsmo_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_signal: 
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [0.0015662411,-0.000200291,-3.4290827e-06,1.3049686e-05,5.041861e-05,-0.0010225909,0.0]
+      std: [0.0012936676,0.00078826846,0.0015917509,0.0037797757,0.005711879,0.11527428,0.0]
+      max: [0.0042887772,0.0033740131,0.0041465242,0.01142326,0.014931569,6.2830777,0.0]
+      min: [-0.003931232,-0.0026556132,-0.005801674,-0.011649237,-0.01700513,-6.282474,0.0]
+    image:
+      image: [120, 120, 3]
+    canonical_view: image
+
+  _dlr_sara_pour_converted_externally_to_rlds: # 图片和数据对不上
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_close_is_positive: False
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [-1.779125e-05,-3.824358e-05,-0.00038651552,2.8173781e-05,7.860234e-05,6.662502e-05,1.0]
+      std: [0.00042584693,0.00050736236,0.0012398473,0.0005687393,0.00075076945,0.00069576234,0.0]
+      max: [0.0041252756,0.0034917803,0.0064525837,0.0065098777,0.006107756,0.006421665,1.0]
+      min: [-0.004632457,-0.0057487926,-0.011109131,-0.004965867,-0.0076577803,-0.00692513,1.0]
+    image:
+      image: [480, 640, 3]
+    canonical_view: image
+
+  _dlr_edan_shared_control_converted_externally_to_rlds:  # instructions within one episode not all the same
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [0.0066478024,-0.0007657355,0.006522838,0.0011679777,-0.006395635,-0.011903042,0.3014113]
+      std: [0.021393627,0.018142333,0.03374378,0.017435411,0.033943783,0.04641878,0.45885926]
+      max: [0.18991442,0.07390025,0.1806482,0.08664861,0.13464981,0.1691028,1.0]
+      min: [-0.10054297,-0.08427435,-0.13533439,-0.17556548,-0.18485673,-0.26806858,0.0]
+    image:
+      image: [360, 640, 3]
+    canonical_view: image
+
+  _asu_table_top_converted_externally_to_rlds:  # instructions not all the same
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      gripper_signal: abs
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [-0.04829057,0.19164251,0.09978654,2.460989,0.00046229397,1.5699155,0.28321108]
+      std: [0.24690276,0.09880382,0.06263857,1.4282565,0.0068450016,0.011229702,0.32279274]
+      max: [0.39995855,0.55227333,0.270501,3.1415906,0.039888673,1.631198,0.9596181]
+      min: [-0.45636123,-0.0033472818,0.020711672,-3.1415923,-0.038345333,1.4695326,-0.2130372]
+    image:
+      image: [224, 224, 3]
+    canonical_view: image
+
+  _stanford_robocook_converted_externally_to_rlds:  # bad image
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: False
+      gripper_close_is_positive: False
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [-2.67842e-06,1.8303779e-06,-0.0013767683,-2.3712617e-05,-0.00010789655,-4.2797503e-05,-2.8979612e-05]
+      std: [0.002275514,0.0023861625,0.010277068,0.0005761813,0.0015414119,0.0006268042,0.0027927894]
+      max: [0.05666566,0.05632849,0.11884554,0.022299306,0.029122513,0.010286045,0.04290463]
+      min: [-0.05887693,-0.056699876,-0.118049115,-0.012663912,-0.030290456,-0.012011405,-0.05652061]
+    image:
+      # depth_1: [256, 256]
+      # depth_2: [256, 256]
+      # depth_3: [256, 256]
+      # depth_4: [256, 256]
+      image_1: [256, 256, 3]
+      image_2: [256, 256, 3]
+      image_3: [256, 256, 3]
+      image_4: [256, 256, 3]
+    canonical_view: image_1
+
+  imperialcollege_sawyer_wrist_cam:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      gripper_is_bool: True
+      gripper_signal: binary
+      gripper_close_is_positive: True
+      index_mapping: [1,2,3,4,5,6,7]
+      mean: [0.00023605324,-0.0009842712,0.00094666186,0.0011849315,-4.6923204e-05,1.4285401e-05,0.5726077]
+      std: [0.0030598326,0.006771865,0.010962971,0.023719376,0.0032084314,0.003953903,0.49469307]
+      max: [0.03886363,0.030030029,0.09125323,0.1702448,0.036239807,0.049347647,1.0]
+      min: [-0.020447163,-0.05311591,-0.04699578,-0.13995367,-0.0328519,-0.055988327,0.0]
+    image:
+      image: [64, 64, 3]
+      wrist_image: [64, 64, 3]
+    canonical_view: image
+
+  _iamlab_cmu_pickup_insert_converted_externally_to_rlds:
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      abs_action: True
+      gripper_is_bool: True
+      gripper_close_is_positive: False
+      index_mapping: [1,2,3,4,5,6,8]
+      mean: [0.5274292,0.028582023,0.18712406,-0.0131298825,0.9998938,0.0036105025,0.5550632]
+      std: [0.081083916,0.111675,0.07747591,0.016080942,0.00063183776,0.0078107985,0.49694073]
+      max: [0.66349816,0.23428471,0.43082854,0.041561358,0.9999999,0.023352295,1.0]
+      min: [0.3071657,-0.2975497,0.06578229,-0.06755125,0.9966192,-0.026384523,0.0]
+    image:
+      image: [360, 640, 3]
+      wrist_image: [240, 320, 3]
+    canonical_view: image
+
+  _uiuc_d3field: # 需要再对一下
+    language:
+      outer_key: language_instruction
+      inner_key:
+    action:
+      outer_key: action
+      inner_keys: [action]
+      abs_action: True
+      gripper_is_bool: None
+      gripper_close_is_positive: None
+      index_mapping: [1,2,3,0,0,0]
+      min: [ -0.0151053965,-0.015266597,-0.015180364 ]
+      max: [ 0.015263855,0.015294969,0.015344886 ]
+      mean: [ 0.00018498691,1.10236315e-05,-0.00017510964 ]
+      std: [ 0.0029065583,0.0025309222,0.002859444 ]
+    image:
+      # depth_1: [360, 640, 1]
+      # depth_2: [360, 640, 1]
+      # depth_3: [360, 640, 1]
+      # depth_4: [360, 640, 3]
+      image_1: [360, 640, 3]
+      image_2: [360, 640, 3]
+      image_3: [360, 640, 3]
+      image_4: [360, 640, 3]
+    canonical_view: image_1

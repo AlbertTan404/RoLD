@@ -1,0 +1,64 @@
+seed: 42
+horizon: 
+task: 
+
+model:
+  target: RoLD.models.autoencoder.downsample_cvae.DownsampleCVAE
+  kwargs:
+    model_kwargs:
+      action_dim: 7
+      hidden_size: 512
+      latent_size: 32
+      n_encoder_layers: 3
+      n_decoder_layers: 6
+      n_heads: 8
+      horizon: ${horizon}
+      dropout: 0.1
+      language_feature_dim: 
+      low_dim_feature_dim:
+      with_obs: True
+      with_language: True
+      ckpt_path: 
+
+    training_kwargs:
+      lr: 1e-4
+      warmup_steps: 1000
+      loss_kwargs:
+        kl_weight: 1e-2
+
+trainer:
+  target: lightning.pytorch.trainer.Trainer
+  kwargs:
+    devices: [0, 1, 2, 3]
+    # devices: [0]
+    max_epochs: 400
+    pretrain_max_epochs: 10
+    check_val_every_n_epoch: 1
+    log_every_n_steps: 10
+    logger:
+      target: lightning.pytorch.loggers.wandb.WandbLogger
+      kwargs: 
+        project: 
+        name: 
+    num_sanity_val_steps: 2
+
+dataset:
+  target: RoLD.datasets.multi_dataset.MultiDataset
+  kwargs:
+    root_dir: 
+    dataset_names:
+    data_cfg: 
+    horizon: ${horizon}
+    get_language: True 
+    get_canonical_image: # processed in main.preprocess 
+    get_image_dict: # processed in main.preprocess 
+    get_low_dim: # processed in main.preprocess 
+    average_step_per_episode: # processed in main.preprocess
+    feature_type: r3m_resnet34
+    # feature_type: clip_ViT-B32
+
+dataloader:
+  batch_size: 512
+  num_workers: 32
+  pin_memory: True
+  persistent_workers: True

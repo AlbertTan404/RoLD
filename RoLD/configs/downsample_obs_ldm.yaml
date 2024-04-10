@@ -1,0 +1,65 @@
+seed: 42
+horizon: 
+task: 
+
+model:
+  target: RoLD.models.diffusion.downsample_obs_ldm.DownsampleObsLDM
+  kwargs:
+    ae_ckpt_path: # required
+    model_kwargs:
+      hidden_size: # obtained from loaded AE
+      latent_size: # obtained from loaded AE
+      n_layers: 6
+      n_heads: 8
+      horizon: ${horizon}
+      dropout: 0.1
+      language_feature_dim: # processed in main.preprocess
+      low_dim_feature_dim: # processed in main.preprocess
+      ckpt_path: 
+
+    training_kwargs:
+      lr: 1e-4
+      warmup_steps: 1000
+    noise_scheduler_kwargs:
+      num_train_timesteps: 1000
+      num_inference_timesteps: 1000
+      beta_start: 0.0001
+      beta_end: 0.02
+      beta_schedule: linear
+
+trainer:
+  target: lightning.pytorch.trainer.Trainer
+  kwargs:
+    devices: [0, 1, 2, 3]
+    # devices: [0]
+    max_epochs: 100
+    pretrain_max_epochs: 10
+    check_val_every_n_epoch: 2
+    log_every_n_steps: 10
+    logger:
+      target: lightning.pytorch.loggers.wandb.WandbLogger
+      kwargs: 
+        project:  # processed in main.preprocess
+        name:  # processed in main.preprocess
+    num_sanity_val_steps: 2
+
+dataset:
+  target: RoLD.datasets.multi_dataset.MultiDataset
+  kwargs:
+    root_dir:  # processed in main.preprocess
+    dataset_names:  # processed in main.preprocess
+    data_cfg:  # processed in main.preprocess
+    horizon: ${horizon}
+    get_language: True
+    get_canonical_image: # processed in main.preprocess
+    get_image_dict:  # processed in main.preprocess
+    get_low_dim:  # processed in main.preprocess
+    average_step_per_episode: # processed in main.preprocess
+    feature_type: r3m_resnet34
+    # feature_type: clip_ViT-B32
+
+dataloader:
+  batch_size: 512
+  num_workers: 32
+  pin_memory: True
+  persistent_workers: True

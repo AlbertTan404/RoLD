@@ -1,0 +1,10 @@
+data
+*.out
+__pycache__/
+*logs
+.vscode
+temp*
+outputs
+wandb
+*LOG.*
+*log.*
