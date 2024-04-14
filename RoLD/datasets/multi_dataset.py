@@ -95,8 +95,7 @@ class SingleDataset(Dataset):
         recursize_depth=0, 
     ):
         if recursize_depth > 100:
-            print(f'No enough episode longer than {horizon} steps in {self.dataset_name}')
-            return None
+            raise ValueError(f'No enough episode longer than {horizon} steps in {self.dataset_name}')
 
         num_steps = len(self.action_data[episode_index])
         if num_steps < horizon:  # get random one
@@ -224,14 +223,14 @@ class MultiDataset(Dataset):
 
         index = index % self.accumulated_lengthes[-1]
 
-        dataset_idx = bisect.bisect_right(self.accumulated_lengthes, index)
+        dataset_index = bisect.bisect_right(self.accumulated_lengthes, index)
 
         if dataset_idx == 0:
             data_index = index
         else:
             data_index = index - self.accumulated_lengthes[dataset_idx - 1]
 
-        return dataset_idx, data_index
+        return dataset_index, data_index
 
     def __getitem__(self, index):
         dataset_index, data_index = self.get_dataset_and_episode_index(index)
