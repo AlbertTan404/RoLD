@@ -16,7 +16,7 @@ The pre-training datasets are listed in RoLD/configs/tasks/rt-X_data_cfg.yaml
 
 - Normalize actions according to the statistics for unified training with *normalize_actoins.py* and *rt-x_data_cfg.yaml*. 
 
-### Environment
+## Environment
 In your python environment:
 
 - install basic libraries
